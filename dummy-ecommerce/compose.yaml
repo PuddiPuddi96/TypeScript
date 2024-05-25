@@ -16,3 +16,9 @@ services:
 
 volumes:
   pgdata: {}
+
+
+
+#start docker: docker compose up -d <servicerName>
+#check-up db: docker exec -it <containerName> psql -U postgres
+#\dt -> table list
