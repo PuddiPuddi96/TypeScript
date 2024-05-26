@@ -22,4 +22,4 @@ volumes:
 #start docker: docker compose up -d <servicerName>
 #check-up db: docker exec -it <containerName> psql -U postgres
 #\dt -> table list
-#TODO: aaaaaa
+#TODO: 
