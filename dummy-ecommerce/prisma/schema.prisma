@@ -4,6 +4,9 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+//Update schema: npx prisma migrate dev --name <CamelCaseIstruction> es. <CreateUserTable> 
+//Open prisma studio: npx prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,4 +31,16 @@ model User {
   updateAt DateTime @default(now())
 
   @@map("user")
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  description String
+  price Decimal
+  tags String
+  createdAt DateTime @default(now())
+  updateAt DateTime @default(now())
+
+  @@map("products")
 }
