@@ -11,6 +11,5 @@ export const AddressSchema = z.object({
     lineTwo: z.string().nullable(),
     pincode: z.string().length(6),
     country: z.string(),
-    city: z.string(),
-    userId: z.number()
+    city: z.string()
 })

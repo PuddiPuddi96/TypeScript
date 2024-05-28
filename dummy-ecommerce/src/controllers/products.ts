@@ -35,13 +35,13 @@ export const updateProduct = async(request: Request, response: Response) => {
 
 export const deleteProduct = async(request: Request, response: Response) => {
     try {
-        const deleteProduct = await prismaClient.product.delete({
+        await prismaClient.product.delete({
             where: {
                 id: Number(request.params.id)
             }
         })
 
-        response.json(deleteProduct);
+        response.json({success: true});
     } catch (error) {
         throw new NotFoundException('Product not found', ErrorCodes.PRODUCT_NOT_FOUND)
     }
