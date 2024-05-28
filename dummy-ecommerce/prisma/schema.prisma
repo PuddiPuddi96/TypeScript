@@ -21,6 +21,7 @@ model User {
   updateAt  DateTime  @default(now())
   role      Role      @default(USER)
   address   Address[]
+  cartItems CartItem[]
 
   @@map("user")
 }
@@ -33,6 +34,7 @@ model Product {
   tags        String
   createdAt   DateTime @default(now())
   updateAt    DateTime @default(now())
+  cartItems CartItem[]
 
   @@map("products")
 }
@@ -50,6 +52,19 @@ model Address {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("address")
+}
+
+model CartItem {
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  quantity Int
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+
+  @@map("cart_item")
 }
 
 enum Role {
