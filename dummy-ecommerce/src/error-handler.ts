@@ -8,19 +8,19 @@ export const errorHandler = (method: Function) => {
     return async (request: Request, response: Response, next: NextFunction) => {
         try {
             await method(request, response, next);
-        } catch (error: any) {
+        } catch (error) {
             let exception: HttpException;
             if(error instanceof HttpException){
                 exception = error;
             }else{
                 if(error instanceof ZodError){
                     exception = new BadRequestException(
-                        'Unprocessable entity',
+                        error.message,
                         ErrorCodes.UNPROCESSABLE_ENTITY)
                 }else{
                     exception = new InternalException(
                         'Something went wrong!', 
-                        error, 
+                        '', 
                         ErrorCodes.INTERNAL_EXCEPTION)
                 }
             }

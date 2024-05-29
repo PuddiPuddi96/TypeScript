@@ -9,19 +9,19 @@ import { prismaClient } from "..";
 const authMiddleware = async(request: Request, response: Response, next: NextFunction) => {
     const token = request.headers.authorization;
     if(!token){
-        next(new UnauthorizedException('Unauthorized', ErrorCodes.UNAUTHORIZED, ''))
+        next(new UnauthorizedException('Unauthorized', ErrorCodes.UNAUTHORIZED, 'Missing token'))
     }else{
         try {
-            const payload = jwt.verify(token, JWT_SECRET) as any;
+            const payload = jwt.verify(token, JWT_SECRET);
             
             const user = 
                 await prismaClient
                     .user
                     .findFirst(
-                        {where: {id: payload.userId}}
+                        {where: {id: (<any>payload).userId}}
                     );
             if(!user){
-                next(new UnauthorizedException('Unauthorized', ErrorCodes.UNAUTHORIZED, ''));
+                next(new UnauthorizedException('Unauthorized', ErrorCodes.UNAUTHORIZED, 'User not found'));
             }else {
                 request.user = user;
                 next();
