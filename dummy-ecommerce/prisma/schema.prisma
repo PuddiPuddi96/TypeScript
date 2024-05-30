@@ -22,6 +22,7 @@ model User {
   role      Role      @default(USER)
   address   Address[]
   cartItems CartItem[]
+  orders Order[]
 
   @@map("user")
 }
@@ -35,6 +36,7 @@ model Product {
   createdAt   DateTime @default(now())
   updateAt    DateTime @default(now())
   cartItems CartItem[]
+  orders OrderProduct[]
 
   @@map("products")
 }
@@ -67,7 +69,54 @@ model CartItem {
   @@map("cart_item")
 }
 
+model Order {
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  netAmount Decimal
+  address String
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+
+  products OrderProduct[]
+  events OrderEvents[]
+
+  @@map("orders")
+}
+
+model OrderProduct {
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId], references: [id])
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  quantity Int
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+
+  @@map("order_products")
+}
+
+model OrderEvents {
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId], references: [id])
+  status OrderEventStatus @default(PENDING)
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+
+  @@map("order_events")
+}
+
 enum Role {
   ADMIN
   USER
+}
+
+enum OrderEventStatus {
+  PENDING
+  ACCEPTED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
 }
