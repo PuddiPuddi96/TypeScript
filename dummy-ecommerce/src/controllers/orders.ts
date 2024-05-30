@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import { prismaClient } from "..";
+import { OrderEventStatus } from "@prisma/client";
+import { NotFoundException } from "../exceptions/not-found";
+import { ErrorCodes } from "../exceptions/root";
 
 export const createOrder = async(request: Request, response: Response) => {
     //Create transaction
@@ -50,7 +53,7 @@ export const createOrder = async(request: Request, response: Response) => {
         })
 
         //create order event
-        const orderEvent = await tx.orderEvents.create({
+        await tx.orderEvents.create({
             data: {
                 orderId: order.id
             }
@@ -68,13 +71,51 @@ export const createOrder = async(request: Request, response: Response) => {
 }
 
 export const listOrders = async(request: Request, response: Response) => {
-    
+    const orders = await prismaClient.order.findMany({
+        where: {
+            userId: request.user.id
+        }
+    })
+    response.json(orders);
 }
 
 export const cancelOrder = async(request: Request, response: Response) => {
-    
+    //TODO: wrap in a transaction
+    //TODO: check if the user is cancelling its own order
+    try {
+        const order = await prismaClient.order.update({
+            where: {
+                id: Number(request.params.id)
+            },
+            data: {
+                status: OrderEventStatus.CANCELLED
+            }
+        })
+        await prismaClient.orderEvents.create({
+            data: {
+                orderId: order.id,
+                status: OrderEventStatus.CANCELLED
+            }
+        })
+        response.json(order)
+    } catch (error) {
+        throw new NotFoundException('Order not found', ErrorCodes.ORDER_NOT_FOUND)
+    }
 }
 
 export const getOrderById = async(request: Request, response: Response) => {
-    
+    try {
+        const order = await prismaClient.order.findFirstOrThrow({
+            where: {
+                id: Number(request.params.id)
+            },
+            include: {
+                products: true,
+                events: true
+            }
+        })
+        response.json(order)
+    } catch (error) {
+        throw new NotFoundException('Order not found', ErrorCodes.ORDER_NOT_FOUND)
+    }
 }
