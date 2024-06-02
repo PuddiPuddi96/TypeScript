@@ -1,0 +1,1 @@
+This repository contains a simple e-commerce project built with TypeScript. It includes basic features such as product listings, a shopping cart, and a checkout process, designed to help understand the fundamentals of building an e-commerce application.
