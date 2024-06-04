@@ -4,6 +4,7 @@ import { NotFoundException } from "../exceptions/not-found";
 import { ErrorCodes } from "../exceptions/root";
 import { Product } from "@prisma/client";
 import { prismaClient } from "..";
+import { UnauthorizedException } from "../exceptions/unauthorized";
 
 export const addItemToCart = async(request: Request, response: Response) => {
     //TODO: check for the existence of the same product in user's cart and alter the quantity as required
@@ -34,7 +35,17 @@ export const addItemToCart = async(request: Request, response: Response) => {
 }
 
 export const deleteItemFromCart = async(request: Request, response: Response) => {
-    //TODO: Check if user is deleting its own cart item
+    try {
+        let cart = await prismaClient.cartItem.findFirstOrThrow({
+            where: {
+                id: Number(request.params.id),
+                userId: request.user.id
+            }
+        })
+    } catch (error) {
+        throw new UnauthorizedException('This cart does not belong to the logged in user', ErrorCodes.UNAUTHORIZED, '')
+    }
+
     await prismaClient.cartItem.delete({
         where: {
             id: Number(request.params.id)
