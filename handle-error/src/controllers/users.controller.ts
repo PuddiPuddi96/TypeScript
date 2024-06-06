@@ -1,13 +1,19 @@
-function httpSignUp() {
-  throw new Error();
+import {NextFunction, Request, Response} from 'express';
+
+async function httpSignUp(
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  next(new Error('Sign up error'));
 }
 
 function httpSignIn() {
-  throw new Error('Bad Request');
+  throw new Error('Sign in error');
 }
 
 function httpSignOut() {
-  throw new Error('Another bad request');
+  throw new Error('Sorry, we are not available now');
 }
 
-export { httpSignUp, httpSignIn, httpSignOut};
+export {httpSignUp, httpSignIn, httpSignOut};
