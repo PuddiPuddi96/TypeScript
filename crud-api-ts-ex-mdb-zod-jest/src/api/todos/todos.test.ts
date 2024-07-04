@@ -51,7 +51,6 @@ describe('POST /api/v1/todos', () => {
       .expect('Content-Type', /json/)
       .expect(201)
       .then((response) => {
-        console.log(response.body);
         expect(response.body).toHaveProperty('_id');
         expect(response.body).toHaveProperty('content');
         expect(response.body.content).toBe('Learn TS');
